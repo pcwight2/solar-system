@@ -1,109 +1,132 @@
 <!DOCTYPE html>
-<html>
-<body style="margin:0;background:black;overflow-x:scroll;color:white;font-family:sans-serif;">
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solar System Strip</title>
+<style>
+  body {
+    margin: 0;
+    background: black;
+    color: white;
+    font-family: sans-serif;
+    overflow-x: scroll;
+  }
+  .container {
+    position: relative;
+    height: 600px;
+    width: 930000px; /* width to fit outer planets to scale */
+    background: black;
+  }
+  .planet, .tick, .planet-tick {
+    position: absolute;
+  }
+  .tick {
+    width: 2px;
+    background: white;
+  }
+  .planet-tick {
+    width: 4px;
+    height: 25px;
+    background: red;
+  }
+</style>
+</head>
+<body>
+<div class="container">
 
-<div style="position:relative;height:600px;width:930000px;background:black;">
+  <!-- Invisible centerline for planets -->
+  <div style="left:0; top:180px; height:1px; width:930000px; background:transparent;"></div>
 
-<!-- Invisible centerline for planets -->
-<div style="position:absolute;left:0;top:180px;height:1px;width:930000px;background:transparent;"></div>
+  <!-- SUN -->
+  <div style="left:100px; top:37px; width:285px; height:285px; border-radius:50%; background:yellow;"></div>
+  <div style="left:100px; top:0px; font-size:50px;">Sun</div>
 
-<!-- SUN -->
-<div style="position:absolute;left:100px;top:37px;width:285px;height:285px;border-radius:50%;background:yellow;"></div>
-<div style="position:absolute;left:100px;top:0px;font-size:50px;">Sun</div> <!-- moved slightly right and down -->
+  <!-- PLANETS -->
+  <div class="planet" style="left:12058px; top:179.5px; width:1px; height:1px; background:#aaa;"></div>
+  <div class="planet" style="left:22177px; top:178.8px; width:2.48px; height:2.48px; border-radius:50%; background:#e6c27a;"></div>
+  <div class="planet" style="left:30762px; top:178.7px; width:2.61px; height:2.61px; border-radius:50%; background:#4aa3ff;"></div>
+  <div class="planet" style="left:30841px; top:179.6px; width:0.71px; height:0.71px; border-radius:50%; background:white;"></div>
+  <div class="planet" style="left:46706px; top:179.3px; width:1.39px; height:1.39px; border-radius:50%; background:#c1440e;"></div>
+  <div class="planet" style="left:159542px; top:165px; width:28.7px; height:28.7px; border-radius:50%; background:#d9b38c;"></div>
+  <div class="planet" style="left:293842px; top:168px; width:23.9px; height:23.9px; border-radius:50%; background:#e3c98b;"></div>
+  <div class="planet" style="left:588810px; top:175px; width:10.4px; height:10.4px; border-radius:50%; background:#7ad6de;"></div>
+  <div class="planet" style="left:923026px; top:175px; width:10.1px; height:10.1px; border-radius:50%; background:#4b70dd;"></div>
 
-<!-- PLANETS -->
-<div style="position:absolute;left:12058px;top:179.5px;width:1px;height:1px;background:#aaa;"></div>
-<div style="position:absolute;left:22177px;top:178.8px;width:2.48px;height:2.48px;border-radius:50%;background:#e6c27a;"></div>
-<div style="position:absolute;left:30762px;top:178.7px;width:2.61px;height:2.61px;border-radius:50%;background:#4aa3ff;"></div>
-<div style="position:absolute;left:30841px;top:179.6px;width:0.71px;height:0.71px;border-radius:50%;background:white;"></div>
-<div style="position:absolute;left:46706px;top:179.3px;width:1.39px;height:1.39px;border-radius:50%;background:#c1440e;"></div>
-<div style="position:absolute;left:159542px;top:165px;width:28.7px;height:28.7px;border-radius:50%;background:#d9b38c;"></div>
-<div style="position:absolute;left:293842px;top:168px;width:23.9px;height:23.9px;border-radius:50%;background:#e3c98b;"></div>
-<div style="position:absolute;left:588810px;top:175px;width:10.4px;height:10.4px;border-radius:50%;background:#7ad6de;"></div>
-<div style="position:absolute;left:923026px;top:175px;width:10.1px;height:10.1px;border-radius:50%;background:#4b70dd;"></div>
+  <!-- Measurement ruler -->
+  <div style="left:0; top:400px; height:2px; width:930000px; background:white;"></div>
 
-<!-- MEASUREMENT RULER BELOW PLANETS -->
-<div style="position:absolute;left:0px;top:400px;height:2px;width:930000px;background:white;"></div>
+  <script>
+    const pxPerAU = 30660;
+    const container = document.querySelector('.container');
+    const tickIntervalAU = 1/50; // 0.02 AU
+    const totalAU = 31; // cover ~31 AU
+    const totalTicks = totalAU / tickIntervalAU; // 31 / 0.02 = 1550
 
-<script>
-const pxPerAU = 30660; // Mercury=1px scale
-const container = document.currentScript.parentElement;
+    // Draw ticks and labels
+    for(let i=1; i<=totalTicks; i++){
+      const x = i * tickIntervalAU * pxPerAU;
 
-// Draw 0.1 AU ticks and labels
-for(let i=1;i<=310;i++){
-  let x = i * pxPerAU/10;
+      // Tick height
+      const tickHeight = (i % 50 === 0 ? 18 : i % 25 === 0 ? 14 : 8);
+      const tick = document.createElement('div');
+      tick.className = 'tick';
+      tick.style.left = x + 'px';
+      tick.style.top = (400 - tickHeight) + 'px';
+      tick.style.height = tickHeight + 'px';
+      container.appendChild(tick);
 
-  // Tick
-  let tick = document.createElement("div");
-  tick.style.position="absolute";
-  tick.style.left = x+"px";
-  tick.style.width = "2px";
-  tick.style.background = "white";
+      // Tick label every tick
+      const label = document.createElement('div');
+      label.style.position = 'absolute';
+      label.style.left = (x - 25) + 'px';
+      label.style.top = '420px';
+      label.style.fontSize = '50px';
+      label.style.color = 'white';
+      label.innerText = (i * tickIntervalAU).toFixed(2) + ' AU';
+      container.appendChild(label);
+    }
 
-  // Height of tick
-  if(i % 10 === 0) tick.style.height="18px";
-  else if(i % 5 === 0) tick.style.height="14px";
-  else tick.style.height="8px";
+    const planets = [
+      {name:"Mercury", x:12058},
+      {name:"Venus", x:22177},
+      {name:"Earth", x:30762},
+      {name:"Mars", x:46706},
+      {name:"Jupiter", x:159542},
+      {name:"Saturn", x:293842},
+      {name:"Uranus", x:588810},
+      {name:"Neptune", x:923026}
+    ];
 
-  tick.style.top = (400 - parseInt(tick.style.height)) + "px";
-  container.appendChild(tick);
+    planets.forEach(p=>{
+      // AU label below ruler
+      const auLabel = document.createElement('div');
+      auLabel.style.position = 'absolute';
+      auLabel.style.left = (p.x - 35) + 'px';
+      auLabel.style.top = '460px';
+      auLabel.style.fontSize = '50px';
+      auLabel.style.color = 'white';
+      auLabel.innerText = (p.x/pxPerAU).toFixed(2) + ' AU';
+      container.appendChild(auLabel);
 
-  // Label for every tick (0.1 AU)
-  let label = document.createElement("div");
-  label.style.position="absolute";
-  label.style.left = (x-25) + "px";
-  label.style.top = "420px"; 
-  label.style.fontSize = "50px";
-  label.style.color = "white";
-  label.innerText = (i/10).toFixed(1) + " AU";
-  container.appendChild(label);
-}
+      // Planet name above planet
+      const nameLabel = document.createElement('div');
+      nameLabel.style.position = 'absolute';
+      nameLabel.style.left = (p.x - 35) + 'px';
+      nameLabel.style.top = '70px';
+      nameLabel.style.fontSize = '50px';
+      nameLabel.style.color = 'white';
+      nameLabel.innerText = p.name;
+      container.appendChild(nameLabel);
 
-// Planet positions and labels
-const planets = [
-  {name:"Mercury", x:12058},
-  {name:"Venus", x:22177},
-  {name:"Earth", x:30762},
-  {name:"Mars", x:46706},
-  {name:"Jupiter", x:159542},
-  {name:"Saturn", x:293842},
-  {name:"Uranus", x:588810},
-  {name:"Neptune", x:923026}
-];
-
-planets.forEach(p=>{
-  // Planet AU label below ruler
-  let auLabel = document.createElement("div");
-  auLabel.style.position="absolute";
-  auLabel.style.left = (p.x - 35) + "px";
-  auLabel.style.top = "460px"; // further below ruler
-  auLabel.style.fontSize = "50px";
-  auLabel.style.color = "white";
-  let auValue = (p.x/pxPerAU).toFixed(2);
-  auLabel.innerText = auValue + " AU";
-  container.appendChild(auLabel);
-
-  // Planet name above planet
-  let label = document.createElement("div");
-  label.style.position="absolute";
-  label.style.left = (p.x - 35) + "px";
-  label.style.top = "70px"; // moved higher above planet to avoid overlap
-  label.style.fontSize = "50px";
-  label.style.color = "white";
-  label.innerText = p.name;
-  container.appendChild(label);
-
-  // Tick on ruler for planet
-  let planetTick = document.createElement("div");
-  planetTick.style.position = "absolute";
-  planetTick.style.left = p.x + "px";
-  planetTick.style.width = "4px";
-  planetTick.style.height = "25px";
-  planetTick.style.top = "375px"; // small vertical line above the ruler
-  planetTick.style.background = "red"; // distinguish planet ticks
-  container.appendChild(planetTick);
-});
-</script>
+      // Planet tick on ruler
+      const planetTick = document.createElement('div');
+      planetTick.className = 'planet-tick';
+      planetTick.style.left = p.x + 'px';
+      planetTick.style.top = '375px';
+      container.appendChild(planetTick);
+    });
+  </script>
 
 </div>
 </body>
